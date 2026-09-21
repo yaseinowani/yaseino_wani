@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>野生のワニ</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+JP:wght@400;500;700;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', '"Inter"', 'sans-serif'],
+                        display: ['"Outfit"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Noto Sans JP', 'Inter', sans-serif;
+            background-color: #faf9f6;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px) scale(0.96); filter: blur(8px); }
+            to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0px); }
+        }
+
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-14px) rotate(2deg); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 50px rgba(16,185,129,0.3), inset 0 0 25px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 90px rgba(16,185,129,0.6), inset 0 0 45px rgba(255,255,255,0.9); }
+        }
+
+        @keyframes cinematicIn {
+            0% { opacity: 0; transform: scale(0.7) rotate(-5deg); filter: blur(25px); }
+            100% { opacity: 1; transform: scale(1) rotate(0deg); filter: blur(0px); }
+        }
+
+        @keyframes shimmerText {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        /* Redesigned Next-Gen Cinematic Startup Splash Screen */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(135deg, #090d16 0%, #030712 100%);
+            color: #ffffff;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+        }
+
+        #splash-screen.fade-out {
+            opacity: 0;
+            transform: scale(1.12);
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-anim {
+            animation: cinematicIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .splash-title {
+            background: linear-gradient(90deg, #ffffff 0%, #34d399 50%, #ffffff 100%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            animation: shimmerText 3s linear infinite;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cccccc;
+            border-radius: 999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #999999;
+        }
+
+        .glass-nav {
+            background: rgba(250, 249, 246, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #eaeaea;
+            box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.04);
+            border-radius: 32px;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .bento-card:hover {
+            transform: translateY(-8px) scale(1.008);
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-bounce {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s, box-shadow 0.2s;
+        }
+        .btn-bounce:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+        }
+        .btn-bounce:active {
+            transform: scale(0.97);
+        }
+
+        .page-gyusan {
+            background-color: #fbf9f5;
+            color: #1a1a1a;
+            min-height: 85vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .bg-circle-1 { position: absolute; width: 450px; height: 450px; background: rgba(242, 237, 228, 0.9); border-radius: 50%; top: 10%; left: 5%; z-index: 0; filter: blur(60px); }
+        .bg-circle-2 { position: absolute; width: 550px; height: 550px; background: rgba(242, 237, 228, 0.9); border-radius: 50%; top: 20%; left: 35%; z-index: 0; filter: blur(70px); }
+        .bg-circle-3 { position: absolute; width: 400px; height: 400px; background: rgba(242, 237, 228, 0.9); border-radius: 50%; top: 15%; right: 10%; z-index: 0; filter: blur(60px); }
+
+        .page-gradeco {
+            background-color: #0d0f12;
+            color: #ffffff;
+            min-height: 85vh;
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-[#faf9f6] text-[#1a1a1a] antialiased min-h-screen flex flex-col justify-between selection:bg-neutral-900 selection:text-white">
+
+    <div id="splash-screen">
+        <div class="text-center space-y-6 relative z-10">
+            <div class="w-36 h-36 rounded-3xl bg-neutral-900 mx-auto flex items-center justify-center shadow-2xl splash-anim overflow-hidden border-2 border-emerald-500/40 p-1">
+                <!-- Realistic Crocodile Photo Icon -->
+                <img src="https://images.unsplash.com/photo-1558913919-4977479d2614?auto=format&fit=crop&w=400&q=80" alt="野生のワニ" class="w-full h-full object-cover rounded-2xl transform hover:scale-110 transition-transform duration-700" onerror="this.src='https://images.unsplash.com/photo-1534567153574-2b12153a87f0?auto=format&fit=crop&w=400&q=80'">
+            </div>
+            <div class="space-y-3 splash-anim" style="animation-delay: 0.3s;">
+                <p class="text-4xl font-black tracking-tight font-display splash-title">野生のワニ</p>
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-xs font-mono tracking-widest text-emerald-300 uppercase border border-emerald-500/20 shadow-lg">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Loading Portfolio...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header class="sticky top-0 z-50 glass-nav animate-fade-in">
+        <div class="max-w-6xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#hero" onclick="switchView('home')" class="flex items-center gap-3.5 group text-left">
+                <div class="w-12 h-12 rounded-2xl bg-neutral-900 text-white flex items-center justify-center font-black text-sm shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 overflow-hidden border border-emerald-500/30">
+                    <!-- Realistic Crocodile Photo Icon -->
+                    <img src="https://images.unsplash.com/photo-1558913919-4977479d2614?auto=format&fit=crop&w=200&q=80" alt="野生のワニ" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534567153574-2b12153a87f0?auto=format&fit=crop&w=200&q=80'">
+                </div>
+                <div>
+                    <span class="font-black text-lg tracking-tight text-neutral-900 font-display block leading-none group-hover:text-emerald-700 transition-colors">野生のワニ</span>
+                    <span class="text-[10px] text-neutral-500 font-mono tracking-widest uppercase mt-1 block">Official Portfolio</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-1.5 p-1.5 bg-neutral-200/60 backdrop-blur-md rounded-2xl text-xs font-bold text-neutral-600 shadow-inner">
+                <a href="#hero" onclick="switchView('home')" class="px-4 py-2 rounded-xl transition-all duration-300 hover:text-neutral-900 hover:bg-white hover:shadow-sm">ホーム</a>
+                <a href="#profile" onclick="switchView('home'); scrollToSection('profile')" class="px-4 py-2 rounded-xl transition-all duration-300 hover:text-neutral-900 hover:bg-white hover:shadow-sm">プロフィール</a>
+                <a href="#works" onclick="switchView('home'); scrollToSection('works')" class="px-4 py-2 rounded-xl transition-all duration-300 hover:text-neutral-900 hover:bg-white hover:shadow-sm">制作実績</a>
+                <a href="#playground" onclick="switchView('home'); scrollToSection('playground')" class="px-4 py-2 rounded-xl transition-all duration-300 hover:text-neutral-900 hover:bg-white hover:shadow-sm">プレイグラウンド</a>
+            </nav>
+
+            <div class="flex items-center gap-3">
+                <!-- Extended width X (Twitter) follow button -->
+                <a href="https://x.com/" target="_blank" rel="noopener noreferrer" class="btn-bounce px-10 py-3.5 bg-neutral-900 hover:bg-neutral-800 text-white rounded-2xl text-xs font-bold shadow-lg flex items-center justify-center gap-3 group border border-neutral-700/50 min-w-[200px]">
+                    <svg class="w-4 h-4 fill-current transition-transform group-hover:rotate-12 group-hover:scale-110" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <span class="tracking-wider">X (Twitter) をフォロー</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow z-10 relative">
+
+        <div id="view-home" class="space-y-0 animate-fade-in">
+            <!-- Hero Section -->
+            <section id="hero" class="pt-20 pb-16 max-w-6xl mx-auto px-6">
+                <div class="bento-card p-8 sm:p-16 relative overflow-hidden bg-gradient-to-br from-white via-white to-emerald-50/20 border border-neutral-200/80">
+                    <div class="absolute -right-16 -bottom-16 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="max-w-2xl space-y-6 relative z-10">
+                        <h1 class="text-5xl sm:text-7xl font-black text-neutral-900 tracking-tight leading-[1.1] font-display">
+                            野生のワニ
+                        </h1>
+                        <p class="text-neutral-700 text-base sm:text-lg leading-relaxed whitespace-pre-line font-medium">
+                            Webアプリを開発しています
+                            Python, TypeScript が使える
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Works Section -->
+            <section id="works" class="py-16 max-w-6xl mx-auto px-6 border-t border-neutral-200/80 scroll-mt-24">
+                <div class="mb-10 flex items-end justify-between">
+                    <div>
+                        <span class="text-xs font-mono font-bold text-neutral-500 uppercase tracking-widest">WORKS & APPLICATIONS</span>
+                        <h2 class="text-3xl sm:text-4xl font-black text-neutral-900 mt-1 font-display">制作サイト一覧</h2>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- App 1: まいにち牛さん -->
+                    <div class="bento-card p-8 flex flex-col justify-between group">
+                        <div class="space-y-6">
+                            <div class="aspect-video bg-gradient-to-br from-amber-50 to-orange-100 rounded-2xl flex items-center justify-center relative overflow-hidden border border-amber-200/60 shadow-inner group-hover:shadow-md transition-all">
+                                <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=800&q=80" alt="牛の写真" class="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4551e9d87?auto=format&fit=crop&w=800&q=80'">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[11px] font-mono text-amber-700 bg-amber-100/80 px-2.5 py-1 rounded-md inline-block uppercase font-bold tracking-wider">Web App</span>
+                                <h3 class="text-2xl font-black text-neutral-900 font-display">まいにち牛さん</h3>
+                                <p class="text-neutral-600 text-sm leading-relaxed">
+                                    日々のリフレッシュをサポートするメッセージWebアプリケーション。独自のひとことメッセージとお気に入りの牛さん体験をお届けします。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+                            <button onclick="switchView('gyusan')" class="btn-bounce px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold rounded-xl text-xs transition-all">
+                                専用ページを見る
+                            </button>
+                            <a href="https://buu.eiton.workers.dev/" target="_blank" rel="noopener noreferrer" class="btn-bounce px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl text-xs transition-all inline-flex items-center gap-2 shadow-sm">
+                                <span>サイトを開く</span>
+                                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- App 2: Gradeco -->
+                    <div class="bento-card p-8 flex flex-col justify-between group">
+                        <div class="space-y-6">
+                            <div class="aspect-video bg-[#0d0f12] rounded-2xl flex items-center justify-center relative overflow-hidden border border-neutral-800 shadow-inner group-hover:shadow-md transition-all">
+                                <!-- Larger and bolder Gradeco "G" -->
+                                <div class="w-40 h-40 rounded-3xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-500 flex items-center justify-center text-white text-[150px] font-black tracking-tighter shadow-2xl transform transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 font-display">G</div>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="text-[11px] font-mono text-purple-400 bg-purple-950/80 px-2.5 py-1 rounded-md inline-block uppercase font-bold tracking-wider">Dev Tool</span>
+                                <h3 class="text-2xl font-black text-neutral-900 font-display">グラデコ (Gradeco)</h3>
+                                <p class="text-neutral-600 text-sm leading-relaxed">
+                                    直感的なスライダー操作で複雑なグラデーションとタイポグラフィを組み合わせ、SNS用アイキャッチ画像などを高速作成するツール。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 mt-6 border-t border-neutral-100 flex items-center justify-between">
+                            <button onclick="switchView('gradeco')" class="btn-bounce px-4 py-2.5 bg-neutral-100 hover:bg-neutral-200 text-neutral-800 font-bold rounded-xl text-xs transition-all">
+                                専用ページを見る
+                            </button>
+                            <a href="https://guradeko1.eiton.workers.dev/" target="_blank" rel="noopener noreferrer" class="btn-bounce px-5 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-bold rounded-xl text-xs transition-all inline-flex items-center gap-2 shadow-sm">
+                                <span>サイトを開く</span>
+                                <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Profile Section -->
+            <section id="profile" class="py-16 max-w-6xl mx-auto px-6 border-t border-neutral-200/80 scroll-mt-24">
+                <div class="mb-10">
+                    <span class="text-xs font-mono font-bold text-neutral-500 uppercase tracking-widest">ABOUT</span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-neutral-900 mt-1 font-display">プロフィール</h2>
+                </div>
+
+                <div class="bento-card p-8 sm:p-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center bg-gradient-to-r from-white to-neutral-50/50">
+                    <div class="md:col-span-4 flex flex-col items-center text-center space-y-4">
+                        <div class="w-32 h-32 rounded-3xl bg-neutral-900 text-white flex items-center justify-center text-3xl font-black shadow-xl overflow-hidden border-2 border-emerald-500/30 transform transition-transform hover:scale-105">
+                            <!-- Realistic Crocodile Photo Icon -->
+                            <img src="https://images.unsplash.com/photo-1558913919-4977479d2614?auto=format&fit=crop&w=400&q=80" alt="野生のワニ" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1534567153574-2b12153a87f0?auto=format&fit=crop&w=400&q=80'">
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-black text-neutral-900 font-display">野生のワニ</h3>
+                            <span class="text-xs text-neutral-500 font-mono block mt-1">@yasei_no_wani</span>
+                        </div>
+                    </div>
+
+                    <div class="md:col-span-8 space-y-5 text-neutral-700 text-base sm:text-lg leading-relaxed">
+                        <p class="whitespace-pre-line font-bold text-neutral-950 text-xl sm:text-2xl font-display bg-neutral-100/90 p-6 rounded-2xl border border-neutral-200 shadow-inner">
+                            Webアプリを開発しています
+                            Python, TypeScript が使える
+                        </p>
+                        <p class="text-sm sm:text-base text-neutral-600">
+                            フロントエンドの緻密なUI/UX設計から、堅牢なバックエンドまで一貫して個人開発を行っています。使いやすさと美しさを両立したWebプロダクトの制作に情熱を注いでいます。
+                        </p>
+                        <div class="flex flex-wrap gap-2.5 pt-2">
+                            <span class="px-3.5 py-1.5 bg-neutral-900 text-white rounded-xl text-xs font-mono font-bold shadow-sm">Python</span>
+                            <span class="px-3.5 py-1.5 bg-neutral-900 text-white rounded-xl text-xs font-mono font-bold shadow-sm">TypeScript</span>
+                            <span class="px-3.5 py-1.5 bg-neutral-200 text-neutral-800 rounded-xl text-xs font-mono font-bold">HTML5 / CSS3</span>
+                            <span class="px-3.5 py-1.5 bg-neutral-200 text-neutral-800 rounded-xl text-xs font-mono font-bold">Tailwind CSS</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Playground Section -->
+            <section id="playground" class="py-16 max-w-6xl mx-auto px-6 border-t border-neutral-200/80 scroll-mt-24">
+                <div class="mb-10">
+                    <span class="text-xs font-mono font-bold text-neutral-500 uppercase tracking-widest">PLAYGROUND</span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-neutral-900 mt-1 font-display">プレイグラウンド</h2>
+                </div>
+
+                <div class="bento-card p-8 sm:p-12 space-y-6 text-neutral-700 text-sm sm:text-base leading-relaxed bg-white">
+                    <p class="text-neutral-600">
+                        実験的なインタラクションやミニツールをここに集約しています。今後も随時アップデート予定です。ご期待ください！
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <div id="view-gyusan" class="hidden page-gyusan flex flex-col justify-between py-12 px-6 animate-fade-in">
+            <div class="bg-circle-1 animate-pulse"></div>
+            <div class="bg-circle-2"></div>
+            <div class="bg-circle-3 animate-pulse"></div>
+
+            <div class="max-w-6xl mx-auto w-full z-10">
+                <button onclick="switchView('home')" class="btn-bounce px-4 py-2 bg-neutral-200/85 hover:bg-neutral-300 text-neutral-800 font-bold rounded-xl text-xs transition-all inline-flex items-center gap-2 shadow-sm">
+                    &larr; ホームに戻る
+                </button>
+            </div>
+
+            <div class="max-w-5xl mx-auto w-full py-16 flex flex-col md:flex-row items-center justify-center gap-12 z-10 text-center md:text-left">
+                <div class="w-64 sm:w-80 shrink-0 aspect-square bg-gradient-to-br from-amber-50 to-orange-100 rounded-3xl flex items-center justify-center shadow-2xl border-4 border-white overflow-hidden animate-float">
+                    <img src="https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=800&q=80" alt="牛の写真" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1546445317-29f4551e9d87?auto=format&fit=crop&w=800&q=80'">
+                </div>
+                <div class="space-y-6">
+                    <h1 class="text-5xl sm:text-7xl font-black text-neutral-900 tracking-tight font-display">まいにち牛さん</h1>
+                    <p class="text-neutral-700 text-sm sm:text-base leading-relaxed max-w-lg">
+                        日々のちょっとした息抜きに。のんびりとしたひとことメッセージと、今日のおすすめをお届けする癒やし系Webアプリケーション。心地よいリズムで毎日のアクセスが楽しくなる設計になっています。
+                    </p>
+                    <div class="pt-2">
+                        <a href="https://buu.eiton.workers.dev/" target="_blank" rel="noopener noreferrer" class="btn-bounce px-8 py-4 bg-neutral-900 text-white rounded-xl text-xs font-bold inline-flex items-center gap-3 shadow-xl">
+                            <span>公式サイトを開く (buu.eiton.workers.dev)</span>
+                            <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="max-w-6xl mx-auto w-full z-10 text-center text-xs text-neutral-500 pb-4">
+                &copy; 野生のワニ - まいにち牛さん
+            </div>
+        </div>
+
+        <div id="view-gradeco" class="hidden page-gradeco flex flex-col justify-between py-12 px-6 animate-fade-in">
+            <div class="max-w-6xl mx-auto w-full z-10">
+                <button onclick="switchView('home')" class="btn-bounce px-4 py-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold rounded-xl text-xs transition-all inline-flex items-center gap-2 shadow-sm">
+                    &larr; ホームに戻る
+                </button>
+            </div>
+
+            <div class="max-w-5xl mx-auto w-full py-16 flex flex-col items-center justify-center text-center z-10 space-y-6">
+                <div class="w-44 h-44 rounded-3xl bg-gradient-to-tr from-purple-600 via-pink-500 to-indigo-500 flex items-center justify-center text-white text-[160px] font-black tracking-tighter shadow-2xl animate-float font-display">
+                    G
+                </div>
+                <h1 class="text-5xl sm:text-7xl font-black text-white tracking-tight font-display">Gradeco</h1>
+                <p class="text-neutral-300 text-sm sm:text-base max-w-xl leading-relaxed">
+                    直感的なスライダー操作で、複雑なグラデーションとタイポグラフィを自在に組み合わせるプロフェッショナル向けWebデザインツール。SNS用アイキャッチやバナー作成を高速化します。
+                </p>
+                <div class="pt-4">
+                    <a href="https://guradeko1.eiton.workers.dev/" target="_blank" rel="noopener noreferrer" class="btn-bounce px-8 py-4 bg-white text-neutral-900 rounded-xl text-xs font-bold inline-flex items-center gap-3 shadow-2xl">
+                        <span>公式サイトを開く (guradeko1.eiton.workers.dev)</span>
+                        <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="max-w-6xl mx-auto w-full z-10 text-center text-xs text-neutral-500 pb-4">
+                &copy; 野生のワニ - Gradeco
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="border-t border-neutral-200 bg-white py-8 z-10 relative mt-12">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+            <div>
+                <span class="font-bold text-neutral-800">&copy; 2026 野生のワニ (Yasei no Wani)</span>
+            </div>
+            <div class="flex items-center gap-6 font-semibold text-neutral-600">
+                <a href="#hero" onclick="switchView('home')" class="hover:text-neutral-900 transition-colors">ホーム</a>
+                <a href="#profile" onclick="switchView('home'); scrollToSection('profile')" class="hover:text-neutral-900 transition-colors">プロフィール</a>
+                <a href="#works" onclick="switchView('home'); scrollToSection('works')" class="hover:text-neutral-900 transition-colors">制作実績</a>
+                <a href="https://x.com/" target="_blank" rel="noopener noreferrer" class="hover:text-neutral-900 transition-colors inline-flex items-center gap-1">
+                    <svg class="w-3 h-3 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                    <span>X (Twitter)</span>
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if (splash) {
+                    splash.classList.add('fade-out');
+                }
+            }, 1400);
+        });
+
+        function switchView(viewName) {
+            const homeView = document.getElementById('view-home');
+            const gyusanView = document.getElementById('view-gyusan');
+            const gradecoView = document.getElementById('view-gradeco');
+
+            homeView.classList.add('hidden');
+            gyusanView.classList.add('hidden');
+            gradecoView.classList.add('hidden');
+
+            if (viewName === 'home') {
+                homeView.classList.remove('hidden');
+            } else if (viewName === 'gyusan') {
+                gyusanView.classList.remove('hidden');
+            } else if (viewName === 'gradeco') {
+                gradecoView.classList.remove('hidden');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToSection(sectionId) {
+            setTimeout(() => {
+                const el = document.getElementById(sectionId);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 50);
+        }
+    </script>
+</body>
+</html>
